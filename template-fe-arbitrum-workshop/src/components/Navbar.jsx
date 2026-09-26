@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   ShieldCheck,
   Wallet,
@@ -31,8 +31,25 @@ export default function Navbar({
 }) {
   const [walletDropdownOpen, setWalletDropdownOpen] = useState(false);
   const [networkDropdownOpen, setNetworkDropdownOpen] = useState(false);
+  const networkDropdownRef = useRef(null);
+  const walletDropdownRef = useRef(null);
 
   const activeNetwork = getNetworkConfig(selectedNetworkId);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (networkDropdownRef.current && !networkDropdownRef.current.contains(event.target)) {
+        setNetworkDropdownOpen(false);
+      }
+      if (walletDropdownRef.current && !walletDropdownRef.current.contains(event.target)) {
+        setWalletDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const formatAddress = (addr) => {
     if (!addr) return '';
@@ -99,16 +116,19 @@ export default function Navbar({
         {/* Network & Wallet Section */}
         <div className="arb-nav-actions">
           {/* Network Selector Dropdown (4 Networks) */}
-          <div className="network-dropdown-wrapper">
+          <div className="network-dropdown-wrapper" ref={networkDropdownRef}>
             <button
               type="button"
               className="arb-network-btn"
               onClick={() => setNetworkDropdownOpen(!networkDropdownOpen)}
+              title="Select Blockchain Network"
             >
               <span className="arb-pulse-dot" />
-              <span className="network-name-text">{activeNetwork.shortName}</span>
-              <span className="network-chain-badge font-mono">{activeNetwork.chainId}</span>
-              <ChevronDown size={13} className="caret-icon" />
+              <span className="network-name-text">{activeNetwork.name}</span>
+              <span className={`network-chain-badge font-mono ${activeNetwork.isTestnet ? 'testnet' : 'mainnet'}`}>
+                {activeNetwork.isTestnet ? 'Testnet' : 'Mainnet'}
+              </span>
+              <ChevronDown size={13} className={`caret-icon ${networkDropdownOpen ? 'rotated' : ''}`} />
             </button>
 
             {networkDropdownOpen && (
@@ -150,7 +170,7 @@ export default function Navbar({
 
           {/* Wallet Button */}
           {wallet.isConnected ? (
-            <div className="arb-wallet-wrapper">
+            <div className="arb-wallet-wrapper" ref={walletDropdownRef}>
               {!isChainMatched ? (
                 <button
                   type="button"
