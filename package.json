@@ -1,0 +1,12 @@
+{
+  "name": "arbcheck-workspace",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix template-fe-arbitrum-workshop run dev",
+    "build": "npm --prefix template-fe-arbitrum-workshop run build",
+    "lint": "npm --prefix template-fe-arbitrum-workshop run lint"
+  },
+  "devDependencies": {
+    "solc": "^0.8.37"
+  }
+}

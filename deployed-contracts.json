@@ -1,0 +1,45 @@
+{
+  "network": "Arbitrum Sepolia",
+  "chainId": 421614,
+  "deployedAt": "2026-09-26T01:13:51.139Z",
+  "deployer": "0xe5Ba86e82acE13e8bB5F7047be8985DBE29C3bb1",
+  "isSimulation": true,
+  "contracts": {
+    "SafeToken": {
+      "name": "SafeToken",
+      "address": "0x5Aa4FEe7460F302A257f0e5794E22F0fe5043655",
+      "transactionHash": "0xb37d8122baf63a5c9b01ba1fd88cebb3b7037e6f7b7b81f3b05a10bb91326704",
+      "blockNumber": 11985420,
+      "initialSupply": "1000000",
+      "riskProfile": "LOW RISK (0 / 100, Rating 10.0 / 10)",
+      "explorerUrl": "https://sepolia.arbiscan.io/address/0x5Aa4FEe7460F302A257f0e5794E22F0fe5043655"
+    },
+    "MintableToken": {
+      "name": "MintableToken",
+      "address": "0x678E857E66F33758011B30321791ACb6dee82758",
+      "transactionHash": "0xcd4433f3a26a96eef2cb31315dcc199be733921ceb7869ee79d097ea87529025",
+      "blockNumber": 11985420,
+      "initialSupply": "5000000",
+      "riskProfile": "MEDIUM RISK (+20 Mintable, +15 Owner = 35 / 100, Rating 6.5 / 10)",
+      "explorerUrl": "https://sepolia.arbiscan.io/address/0x678E857E66F33758011B30321791ACb6dee82758"
+    },
+    "TaxToken": {
+      "name": "TaxToken",
+      "address": "0xF526EB9A6b67504FeF84EE4bC88aC0aD094876CC",
+      "transactionHash": "0x55055da471f6215b3d36ccf7936d84152bfb11a9a0fef19f26340adddd3f981e",
+      "blockNumber": 11985420,
+      "initialSupply": "10000000",
+      "riskProfile": "HIGH RISK (+20 Sell Tax, +15 Owner = 55 / 100, Rating 4.5 / 10)",
+      "explorerUrl": "https://sepolia.arbiscan.io/address/0xF526EB9A6b67504FeF84EE4bC88aC0aD094876CC"
+    },
+    "HoneypotTestToken": {
+      "name": "HoneypotTestToken",
+      "address": "0x88Ad5F55A2129278e396a98A6e6267786e384FbF",
+      "transactionHash": "0x84cb7210b8b060d324283080c7c3d08a9f3d8888a6b6e27926b7529aee35b5e3",
+      "blockNumber": 11985420,
+      "initialSupply": "100000000",
+      "riskProfile": "CRITICAL / HONEYPOT (+20 Blacklist, +10 Pause, +15 Owner = 85 / 100, Rating 1.5 / 10)",
+      "explorerUrl": "https://sepolia.arbiscan.io/address/0x88Ad5F55A2129278e396a98A6e6267786e384FbF"
+    }
+  }
+}
