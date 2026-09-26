@@ -320,6 +320,7 @@ export async function scanContract(targetAddress, networkId = DEFAULT_NETWORK_ID
   let holdersStatus = 'PASS';
   let holdersLabel = 'Decentralized';
   let holdersDetail = 'Supply is dispersed across decentralized holders and liquidity pools.';
+  let top10Concentration = 15;
 
   if (ownerAddress && ownerAddress !== ethers.ZeroAddress) {
     try {
@@ -327,6 +328,7 @@ export async function scanContract(targetAddress, networkId = DEFAULT_NETWORK_ID
       const totSupply = await contract.totalSupply();
       if (totSupply > 0n) {
         const ownerPct = Number((ownerBal * 100n) / totSupply);
+        top10Concentration = Math.max(15, ownerPct);
         if (ownerPct > 50) {
           holdersStatus = 'CAUTION';
           holdersLabel = `High Concentration (${ownerPct}%)`;
@@ -348,6 +350,7 @@ export async function scanContract(targetAddress, networkId = DEFAULT_NETWORK_ID
   } else if (isRenounced) {
     holdersLabel = 'Decentralized (No Owner)';
     holdersDetail = 'Ownership is renounced to zero address. No admin holds privileged supply.';
+    top10Concentration = 10;
   }
 
   // 7. Liquidity Analysis Probe
