@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Search,
   ArrowRight,
@@ -8,6 +8,7 @@ import {
   Check,
   Globe,
   ExternalLink,
+  ChevronDown,
 } from 'lucide-react';
 import {
   SUPPORTED_NETWORKS,
@@ -27,9 +28,25 @@ export default function HeroSearch({
   const [addressInput, setAddressInput] = useState('');
   const [validationError, setValidationError] = useState('');
   const [copiedAddr, setCopiedAddr] = useState(null);
+  const [isChainMenuOpen, setIsChainMenuOpen] = useState(false);
+  const chainDropdownRef = useRef(null);
 
   const activeNetwork = getNetworkConfig(selectedNetworkId);
   const currentTokens = MULTICHAIN_TOKENS[activeNetwork.id] || [];
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (chainDropdownRef.current && !chainDropdownRef.current.contains(event.target)) {
+        setIsChainMenuOpen(false);
+      }
+    };
+    if (isChainMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isChainMenuOpen]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -75,30 +92,69 @@ export default function HeroSearch({
         </p>
       </div>
 
-      {/* Network Filter Bar */}
-      <div className="rugcheck-net-bar">
-        <div className="net-bar-list">
-          {Object.values(SUPPORTED_NETWORKS).map((net) => {
-            const isSelected = net.id === activeNetwork.id;
-            return (
-              <button
-                key={net.id}
-                type="button"
-                className={`rugcheck-net-tab ${isSelected ? 'active' : ''}`}
-                onClick={() => onSelectNetwork(net.id)}
-              >
-                <Globe size={13} />
-                <span>{net.name}</span>
-                <span className="net-tag font-mono">{net.isTestnet ? 'Testnet' : 'Mainnet'}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Clean Utilitarian Search Bar */}
+      {/* Clean Utilitarian Search Bar with Left Chain Selector */}
       <form onSubmit={handleSubmit} className="rugcheck-search-form">
         <div className={`rugcheck-input-row ${validationError ? 'has-error' : ''}`}>
+          {/* Select Chain Dropdown Trigger */}
+          <div className="chain-selector-dropdown-wrap" ref={chainDropdownRef}>
+            <button
+              type="button"
+              className={`btn-chain-select-trigger ${isChainMenuOpen ? 'open' : ''}`}
+              onClick={() => setIsChainMenuOpen((prev) => !prev)}
+              title="Select Chain"
+              aria-label="Select Chain"
+            >
+              <Globe size={14} className="chain-trigger-icon" />
+              <div className="chain-trigger-text">
+                <span className="chain-trigger-name">{activeNetwork.name}</span>
+                <span className={`chain-trigger-badge font-mono ${activeNetwork.isTestnet ? 'testnet' : 'mainnet'}`}>
+                  {activeNetwork.isTestnet ? 'Testnet' : 'Mainnet'}
+                </span>
+              </div>
+              <ChevronDown size={13} className={`chain-trigger-chevron ${isChainMenuOpen ? 'rotated' : ''}`} />
+            </button>
+
+            {isChainMenuOpen && (
+              <div className="chain-dropdown-menu">
+                <div className="chain-dropdown-header">
+                  <span>Select Network</span>
+                </div>
+                <div className="chain-dropdown-list">
+                  {Object.values(SUPPORTED_NETWORKS).map((net) => {
+                    const isSelected = net.id === activeNetwork.id;
+                    return (
+                      <button
+                        key={net.id}
+                        type="button"
+                        className={`chain-dropdown-item ${isSelected ? 'selected' : ''}`}
+                        onClick={() => {
+                          onSelectNetwork(net.id);
+                          setIsChainMenuOpen(false);
+                        }}
+                      >
+                        <div className="chain-dropdown-item-left">
+                          <Globe size={14} className={isSelected ? 'text-primary' : 'text-muted'} />
+                          <div className="chain-item-meta">
+                            <span className="chain-item-name">{net.name}</span>
+                            <span className="chain-item-id font-mono">Chain ID: {net.chainId}</span>
+                          </div>
+                        </div>
+                        <div className="chain-dropdown-item-right">
+                          <span className={`chain-item-tag font-mono ${net.isTestnet ? 'testnet' : 'mainnet'}`}>
+                            {net.isTestnet ? 'Testnet' : 'Mainnet'}
+                          </span>
+                          {isSelected && <Check size={14} className="text-emerald" />}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="chain-input-divider" />
+
           <Search size={18} className="search-icon" />
           <input
             type="text"
